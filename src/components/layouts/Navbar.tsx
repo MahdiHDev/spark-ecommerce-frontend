@@ -1,9 +1,10 @@
 "use client";
 
-import { Menu, Search, ShoppingBag, X } from "lucide-react";
+import { Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { CartDrawer } from "../common/CartDrawer";
 
 const navLinks = [
     { name: "Home", href: "/" },
@@ -15,9 +16,10 @@ const navLinks = [
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [isCartOpen, setIsCartOpen] = useState(false);
 
     return (
-        <header className="sticky top-0 z-50 w-full bg-primary text-white shadow-md">
+        <header className="sticky top-0 z-50 w-full bg-primary text-white border-b border-gray-100">
             {/* First Row - Logo, Search & Actions */}
             <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-2 px-4 md:px-8">
                 <div className="flex items-center gap-1">
@@ -39,7 +41,7 @@ export function Navbar() {
                 <div className="hidden max-w-xl flex-1 md:block">
                     <form
                         action="/search"
-                        className="flex h-11 w-full items-center overflow-hidden rounded-3xl bg-white"
+                        className=" p-0.5 flex h-11 w-full items-center overflow-hidden rounded-3xl bg-white"
                     >
                         <input
                             type="text"
@@ -50,7 +52,7 @@ export function Navbar() {
                         <button
                             type="submit"
                             aria-label="Search products"
-                            className="flex h-full w-12 items-center justify-center bg-orange-500 text-white transition hover:bg-zinc-800"
+                            className="mx-0.5 flex h-full w-14 items-center justify-center bg-orange-500 text-white transition hover:bg-zinc-800 rounded-3xl cursor-pointer dueration-300"
                         >
                             <Search size={19} />
                         </button>
@@ -59,13 +61,20 @@ export function Navbar() {
 
                 {/* Action Icons */}
                 <div className="flex shrink-0 items-center gap-4 md:gap-6">
-                    <Link
-                        href="/cart"
-                        aria-label="Shopping cart"
+                    <button
+                        onClick={() => setIsCartOpen(true)}
+                        aria-label="Open shopping cart"
                         className="text-white transition hover:text-zinc-300"
                     >
                         <ShoppingBag size={21} />
-                    </Link>
+                    </button>{" "}
+                    <Link
+                        href="/profile"
+                        aria-label="profile"
+                        className="text-white transition hover:text-zinc-300 hidden lg:block"
+                    >
+                        <UserRound size={21} />
+                    </Link>{" "}
                     {/* Mobile Menu */}
                     <button
                         onClick={() => setIsOpen(true)}
@@ -79,13 +88,13 @@ export function Navbar() {
             </div>
 
             {/* Second Row - Desktop Navigation */}
-            <div className="hidden border-t border-white/10 lg:block bg-white ">
+            <div className="hidden border-t border-white/10 lg:block bg-white">
                 <nav className="mx-auto flex h-12 max-w-7xl items-center justify-center gap-10 px-8">
                     {navLinks.map((link) => (
                         <Link
                             key={link.name}
                             href={link.href}
-                            className="relative text-sm font-medium text-primary/80 transition hover:text-primary"
+                            className="relative text-sm font-medium text-primary/80 transition hover:text-primary after:absolute after:bottom-0 after:left-1/2 after:h-px after:w-full after:-translate-x-1/2 after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:content-[''] hover:after:scale-x-100"
                         >
                             {link.name}
                         </Link>
@@ -97,7 +106,7 @@ export function Navbar() {
             <div className="px-4 pb-4 md:hidden">
                 <form
                     action="/search"
-                    className="flex h-10 w-full items-center overflow-hidden rounded-3xl bg-white"
+                    className="p-0.5 flex h-10 w-full items-center overflow-hidden rounded-3xl bg-white"
                 >
                     <input
                         type="text"
@@ -108,7 +117,7 @@ export function Navbar() {
                     <button
                         type="submit"
                         aria-label="Search products"
-                        className="flex h-full w-11 items-center justify-center bg-orange-500 text-white"
+                        className="flex h-full w-14 items-center justify-center bg-orange-500 text-white rounded-3xl"
                     >
                         <Search size={18} />
                     </button>
@@ -187,6 +196,13 @@ export function Navbar() {
                     </div>
                 </aside>
             </div>
+            {/* End of Mobile Side Drawer */}
+
+            {/* Cart Drawer */}
+            <CartDrawer
+                isOpen={isCartOpen}
+                onClose={() => setIsCartOpen(false)}
+            />
         </header>
     );
 }

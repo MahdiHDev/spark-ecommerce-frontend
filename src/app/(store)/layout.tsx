@@ -1,4 +1,4 @@
-import Footer from "@/components/layouts/Footer";
+import { Footer } from "@/components/layouts/Footer";
 import { Navbar } from "@/components/layouts/Navbar";
 
 const StoreLayout = ({ children }: { children: React.ReactNode }) => {
