@@ -24,7 +24,7 @@ const initialCart: CartItem[] = [
     {
         id: "1",
         name: "Premium Oversized T-Shirt",
-        image: "/images/products/product-1.jpg",
+        image: "/images/products/product1.jpg",
         price: 1290,
         size: "L",
         color: "Black",
@@ -33,7 +33,7 @@ const initialCart: CartItem[] = [
     {
         id: "2",
         name: "Classic Casual Shirt",
-        image: "/images/products/product-2.jpg",
+        image: "/images/products/product2.jpg",
         price: 1890,
         size: "M",
         color: "White",
