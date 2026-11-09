@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import "swiper/css";
 
 interface Product {
@@ -54,14 +55,14 @@ const defaultProducts: Product[] = [
         name: "Premium oversized casual shirt",
         price: 1199,
         image: "/images/products/product5.jpg",
-        slug: "oversized-casual-shirt",
+        slug: "oversized-casual-shirt-2",
     },
     {
         id: 6,
         name: "Premium oversized casual shirt",
         price: 1199,
         image: "/images/products/product6.jpg",
-        slug: "oversized-casual-shirt",
+        slug: "oversized-casual-shirt-3",
     },
 ];
 
@@ -72,42 +73,51 @@ export default function NewArrivals({
     const [swiper, setSwiper] = useState<SwiperType | null>(null);
 
     return (
-        <section className="w-full overflow-hidden bg-[#EDE5E1] py-16 md:py-24">
+        <section className="relative w-full overflow-x-clip bg-[#EDE5E1] py-16 md:py-24 lg:py-28">
             <div className="mx-auto max-w-[1800px]">
-                <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(280px,0.85fr)_minmax(0,2fr)] lg:gap-12 ">
+                <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(280px,0.85fr)_minmax(0,2fr)] lg:gap-12">
                     {/* LEFT CONTENT */}
-                    <div className="relative z-10 flex flex-col justify-start px-5 md:px-10 lg:sticky lg:top-28 lg:h-fit lg:self-start">
-                        <h2 className="text-5xl font-extrabold tracking-tight text-black md:text-6xl xl:text-7xl">
-                            New Arrivals
-                        </h2>
+                    <div className="relative z-10 self-start px-5 md:px-10 lg:sticky lg:top-40 lg:h-fit lg:px-0 lg:pl-10 xl:pl-16">
+                        <div className="flex md:flex-col items-center md:items-start md:justify-start justify-between">
+                            <h2 className="w-full md:max-w-[500px] text-3xl font-extrabold leading-[0.95]  text-black md:text-6xl xl:text-7xl">
+                                New Arrivals
+                                <span className="text-orange-600">.</span>
+                            </h2>
 
-                        <p className="mt-4 max-w-sm text-base text-gray-500 md:text-lg">
-                            The latest drops. Fresh styles added weekly.
-                        </p>
+                            <p className="mt-6 max-w-sm text-base leading-7 text-gray-600 md:text-lg hidden md:block">
+                                The latest drops. Fresh styles added weekly.
+                                Discover pieces designed to elevate your
+                                everyday wardrobe.
+                            </p>
 
-                        <a
-                            href="/collections/new-arrivals"
-                            className="mt-7 w-fit border-b border-black pb-1 text-sm font-semibold text-black"
-                        >
-                            Shop Collection
-                        </a>
-
-                        <div className="mt-8 flex gap-3">
-                            <button
-                                onClick={() => swiper?.slidePrev()}
-                                aria-label="Previous products"
-                                className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-300 hover:bg-black hover:text-white"
+                            <a
+                                href="/collections/new-arrivals"
+                                className="group mt-8 w-fit items-center gap-3 border-b border-black pb-2 text-sm font-bold uppercase tracking-wider text-black hidden md:flex"
                             >
-                                ←
-                            </button>
+                                Shop Collection
+                                <span className="transition-transform duration-300 group-hover:translate-x-1">
+                                    →
+                                </span>
+                            </a>
 
-                            <button
-                                onClick={() => swiper?.slideNext()}
-                                aria-label="Next products"
-                                className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-300 hover:bg-black hover:text-white"
-                            >
-                                →
-                            </button>
+                            {/* SLIDER CONTROLS */}
+                            <div className="md:mt-12 flex gap-3">
+                                <button
+                                    onClick={() => swiper?.slidePrev()}
+                                    aria-label="Previous products"
+                                    className="cursor-pointer flex h-12 w-12 items-center justify-center rounded-full border border-black/20 text-xl text-black transition-all duration-300 hover:border-black hover:bg-black hover:text-white"
+                                >
+                                    <GrFormPrevious className="text-2xl" />
+                                </button>
+
+                                <button
+                                    onClick={() => swiper?.slideNext()}
+                                    aria-label="Next products"
+                                    className="cursor-pointer flex h-12 w-12 items-center justify-center rounded-full border border-black/20 text-xl text-black transition-all duration-300 hover:border-black hover:bg-black hover:text-white"
+                                >
+                                    <GrFormNext className="text-2xl" />
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -118,7 +128,7 @@ export default function NewArrivals({
                             spaceBetween={24}
                             slidesPerView="auto"
                             grabCursor
-                            speed={600}
+                            speed={700}
                             breakpoints={{
                                 640: {
                                     spaceBetween: 24,
@@ -134,16 +144,15 @@ export default function NewArrivals({
                                     key={product.id}
                                     className="!w-[75vw] sm:!w-[350px] xl:!w-[420px]"
                                 >
-                                    {/* Keep your existing product card here */}
                                     <div className="group">
                                         {/* PRODUCT IMAGE */}
-                                        <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100">
+                                        <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#D9D2CD]">
                                             <Image
                                                 src={product.image}
                                                 alt={product.name}
                                                 fill
                                                 sizes="(max-width: 640px) 75vw, (max-width: 1280px) 350px, 420px"
-                                                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                             />
 
                                             {/* ADD TO CART */}
@@ -152,7 +161,7 @@ export default function NewArrivals({
                                                     onClick={() =>
                                                         onAddToCart?.(product)
                                                     }
-                                                    className="w-full rounded-full bg-white px-6 py-4 text-sm font-bold text-black shadow-lg transition-colors hover:bg-black hover:text-white"
+                                                    className="w-full rounded-full bg-black/60 px-6 py-4 text-sm font-bold uppercase tracking-wider shadow-lg transition-colors duration-300 hover:bg-black/80 text-white/90 hover:text-white cursor-pointer"
                                                 >
                                                     Add to Cart
                                                 </button>
@@ -160,15 +169,15 @@ export default function NewArrivals({
                                         </div>
 
                                         {/* PRODUCT DETAILS */}
-                                        <div className="mt-5 flex items-start justify-between gap-3">
+                                        <div className="mt-5 flex items-start justify-between gap-4">
                                             <a
                                                 href={`/products/${product.slug}`}
-                                                className="text-base font-semibold leading-7 text-gray-900 transition-colors hover:text-gray-500 md:text-lg"
+                                                className="max-w-[75%] text-base font-semibold leading-6 text-gray-900 transition-colors hover:text-gray-500 md:text-lg"
                                             >
                                                 {product.name}
                                             </a>
 
-                                            <span className="shrink-0 text-base font-semibold text-orange-600">
+                                            <span className="shrink-0 text-base font-bold text-black">
                                                 ৳{product.price}
                                             </span>
                                         </div>
@@ -176,21 +185,21 @@ export default function NewArrivals({
                                 </SwiperSlide>
                             ))}
 
-                            {/* BROWSE ALL CARD - LAST SLIDE */}
+                            {/* BROWSE ALL CARD */}
                             <SwiperSlide className="!w-[75vw] sm:!w-[350px] xl:!w-[420px]">
                                 <a
                                     href="/collections/new-arrivals"
-                                    className="group flex aspect-[3/4] flex-col items-center justify-center rounded-2xl bg-[#EAE7E1] transition-colors duration-300 hover:bg-[#171717]"
+                                    className="group flex aspect-[3/4] flex-col items-center justify-center rounded-2xl bg-[#DCD3CD] transition-colors duration-500 hover:bg-[#171717]"
                                 >
-                                    <span className="text-3xl font-bold tracking-tight text-black transition-colors group-hover:text-white md:text-4xl">
+                                    <span className="text-3xl font-extrabold tracking-tight text-black transition-colors group-hover:text-white md:text-4xl">
                                         Browse All
                                     </span>
 
-                                    <span className="mt-4 flex h-12 w-12 items-center justify-center rounded-full border border-black text-black transition-all group-hover:border-white group-hover:bg-white group-hover:text-black">
+                                    <span className="mt-6 flex h-14 w-14 items-center justify-center rounded-full border border-black text-2xl text-black transition-all duration-300 group-hover:border-white group-hover:bg-white group-hover:text-black">
                                         →
                                     </span>
 
-                                    <span className="mt-5 text-sm text-gray-500 transition-colors group-hover:text-gray-300">
+                                    <span className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-gray-600 transition-colors group-hover:text-gray-300">
                                         Explore all new arrivals
                                     </span>
                                 </a>
