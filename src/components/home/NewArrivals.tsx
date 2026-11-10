@@ -156,13 +156,8 @@ export default function NewArrivals({
                                             />
 
                                             {/* ADD TO CART */}
-                                            <div className="absolute inset-x-0 bottom-0 p-4 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
-                                                <button
-                                                    onClick={() =>
-                                                        onAddToCart?.(product)
-                                                    }
-                                                    className="w-full rounded-full bg-black/60 px-6 py-4 text-sm font-bold uppercase tracking-wider shadow-lg transition-colors duration-300 hover:bg-black/80 text-white/90 hover:text-white cursor-pointer"
-                                                >
+                                            <div className="absolute inset-x-0 bottom-0 p-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+                                                <button className="w-full rounded-full bg-black/60 hover:bg-black/80 text-white/90 hover:text-white backdrop-blur-xs px-5 py-4 text-xs font-bold uppercase tracking-wider shadow-lg transition-all duration-300 md:text-sm cursor-pointer">
                                                     Add to Cart
                                                 </button>
                                             </div>
