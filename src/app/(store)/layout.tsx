@@ -1,5 +1,6 @@
 import { Footer } from "@/components/layouts/Footer";
 import { Navbar } from "@/components/layouts/Navbar";
+import BottomTabNavigation from "@/components/layouts/BottomTabNavigation";
 
 const StoreLayout = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -7,9 +8,10 @@ const StoreLayout = ({ children }: { children: React.ReactNode }) => {
             {/* <AnnouncementBar /> */}
             <Navbar />
 
-            <main className="">{children}</main>
+            <main className="pb-[72px] lg:pb-0">{children}</main>
 
             <Footer />
+            <BottomTabNavigation />
         </>
     );
 };

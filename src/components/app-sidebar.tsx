@@ -11,7 +11,13 @@ import {
     SidebarHeader,
     SidebarRail,
 } from "@/components/ui/sidebar";
-import { BoxIcon, CarTaxiFront, Settings2Icon, Users2 } from "lucide-react";
+import {
+    BoxIcon,
+    CarTaxiFront,
+    Home,
+    Settings2Icon,
+    Users2,
+} from "lucide-react";
 import Image from "next/image";
 
 // This is sample data.
@@ -74,6 +80,12 @@ const data = {
                     url: "#",
                 },
             ],
+        },
+        {
+            title: "Homepage",
+            url: "/",
+            icon: <Home />,
+            // items: [],
         },
     ],
 };
