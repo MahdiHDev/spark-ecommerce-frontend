@@ -41,7 +41,7 @@ const data = {
                 },
                 {
                     title: "Categories",
-                    url: "#",
+                    url: "/dashboard/categories",
                 },
                 {
                     title: "Brands",
