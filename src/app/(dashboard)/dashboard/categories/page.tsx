@@ -1,10 +1,20 @@
 "use client";
 
-import { AlertCircle, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import {
+    AlertCircle,
+    ChevronLeft,
+    ChevronRight,
+    Pencil,
+    Plus,
+    Trash2,
+} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
     type Category,
+    DEFAULT_CATEGORY_IMAGE,
+    deleteMockCategory,
     getMockCategories,
 } from "@/lib/mock-categories";
 
@@ -34,6 +44,7 @@ export default function CategoriesPage() {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [actionError, setActionError] = useState("");
 
     useEffect(() => {
         function loadCategories() {
@@ -55,6 +66,34 @@ export default function CategoriesPage() {
 
         loadCategories();
     }, []);
+
+    function handleDelete(category: Category) {
+        const message =
+            category.children?.length
+                ? `Delete "${category.name}" and its subcategories? This cannot be undone.`
+                : `Delete "${category.name}"? This cannot be undone.`;
+
+        if (!window.confirm(message)) return;
+
+        try {
+            deleteMockCategory(category.id);
+            const updatedCategories = getMockCategories();
+            setCategories(updatedCategories);
+            setPage((current) =>
+                Math.min(
+                    current,
+                    Math.max(1, Math.ceil(updatedCategories.length / PAGE_SIZE)),
+                ),
+            );
+            setActionError("");
+        } catch (caught) {
+            setActionError(
+                caught instanceof Error
+                    ? caught.message
+                    : "Unable to delete the category.",
+            );
+        }
+    }
 
     const totalPages = Math.max(1, Math.ceil(categories.length / PAGE_SIZE));
     const pageCategories = categories.slice(
@@ -83,6 +122,12 @@ export default function CategoriesPage() {
                 </Link>
             </div>
 
+            {actionError && (
+                <p role="alert" className="text-sm text-red-600">
+                    {actionError}
+                </p>
+            )}
+
             <section className="overflow-hidden rounded-lg border bg-white">
                 {error ? (
                     <div
@@ -95,9 +140,12 @@ export default function CategoriesPage() {
                 ) : (
                     <>
                         <div className="overflow-x-auto">
-                            <table className="w-full min-w-[600px] text-left text-sm">
+                            <table className="w-full min-w-[760px] text-left text-sm">
                                 <thead className="border-b bg-muted/40 text-muted-foreground">
                                     <tr>
+                                        <th className="px-5 py-3 font-medium">
+                                            Image
+                                        </th>
                                         <th className="px-5 py-3 font-medium">
                                             Name
                                         </th>
@@ -110,13 +158,16 @@ export default function CategoriesPage() {
                                         <th className="px-5 py-3 font-medium">
                                             Created
                                         </th>
+                                        <th className="px-5 py-3 text-right font-medium">
+                                            Actions
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y">
                                     {loading ? (
                                         <tr>
                                             <td
-                                                colSpan={4}
+                                                colSpan={6}
                                                 className="px-5 py-12 text-center text-muted-foreground"
                                             >
                                                 Loading categories…
@@ -125,7 +176,7 @@ export default function CategoriesPage() {
                                     ) : rows.length === 0 ? (
                                         <tr>
                                             <td
-                                                colSpan={4}
+                                                colSpan={6}
                                                 className="px-5 py-12 text-center text-muted-foreground"
                                             >
                                                 No categories found. Create
@@ -144,6 +195,19 @@ export default function CategoriesPage() {
                                                     key={category.id}
                                                     className="hover:bg-muted/20"
                                                 >
+                                                    <td className="px-5 py-3">
+                                                        <Image
+                                                            src={
+                                                                category.image ??
+                                                                DEFAULT_CATEGORY_IMAGE
+                                                            }
+                                                            alt={category.name}
+                                                            width={48}
+                                                            height={48}
+                                                            unoptimized
+                                                            className="size-12 rounded-md border object-cover"
+                                                        />
+                                                    </td>
                                                     <td className="px-5 py-4 font-medium">
                                                         <span
                                                             style={{
@@ -163,6 +227,31 @@ export default function CategoriesPage() {
                                                         {new Date(
                                                             category.createdAt,
                                                         ).toLocaleDateString()}
+                                                    </td>
+                                                    <td className="px-5 py-3">
+                                                        <div className="flex justify-end gap-2">
+                                                            <Link
+                                                                href={`/dashboard/categories/${encodeURIComponent(category.id)}/edit`}
+                                                                aria-label={`Edit ${category.name}`}
+                                                                title={`Edit ${category.name}`}
+                                                                className="inline-flex size-9 items-center justify-center rounded-md border transition hover:bg-muted"
+                                                            >
+                                                                <Pencil className="size-4" />
+                                                            </Link>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        category,
+                                                                    )
+                                                                }
+                                                                aria-label={`Delete ${category.name}`}
+                                                                title={`Delete ${category.name}`}
+                                                                className="inline-flex size-9 items-center justify-center rounded-md border text-red-600 transition hover:bg-red-50"
+                                                            >
+                                                                <Trash2 className="size-4" />
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ),

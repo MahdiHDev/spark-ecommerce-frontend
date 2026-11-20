@@ -2,12 +2,24 @@ export type Category = {
     id: string;
     name: string;
     slug: string;
+    image?: string;
     parentId: string | null;
     createdAt: string;
     children?: Category[];
 };
 
 const STORAGE_KEY = "spark-dashboard-categories";
+export const DEFAULT_CATEGORY_IMAGE = "/images/categories/category.jpg";
+const categoryImagePaths = [
+    DEFAULT_CATEGORY_IMAGE,
+    "/images/categories/category2.jpg",
+    "/images/categories/category3.jpg",
+    "/images/categories/category4.jpg",
+    "/images/categories/category5.jpg",
+    "/images/categories/category6.jpg",
+    "/images/categories/category7.jpg",
+    "/images/categories/category8.jpg",
+];
 
 const defaultCategories: Category[] = [
     {
@@ -143,6 +155,7 @@ function isCategory(value: unknown): value is Category {
         typeof value.id === "string" &&
         typeof value.name === "string" &&
         typeof value.slug === "string" &&
+        (value.image === undefined || typeof value.image === "string") &&
         (typeof value.parentId === "string" || value.parentId === null) &&
         typeof value.createdAt === "string" &&
         (value.children === undefined ||
@@ -159,14 +172,26 @@ function cloneCategories(categories: Category[]): Category[] {
     }));
 }
 
+function addCategoryImages(categories: Category[]): Category[] {
+    return categories.map((category, index) => ({
+        ...category,
+        image:
+            category.image ||
+            categoryImagePaths[index % categoryImagePaths.length],
+        ...(category.children
+            ? { children: addCategoryImages(category.children) }
+            : {}),
+    }));
+}
+
 export function getMockCategories(): Category[] {
     if (typeof window === "undefined") {
-        return cloneCategories(defaultCategories);
+        return addCategoryImages(cloneCategories(defaultCategories));
     }
 
     const savedCategories = window.localStorage.getItem(STORAGE_KEY);
     if (savedCategories === null) {
-        return cloneCategories(defaultCategories);
+        return addCategoryImages(cloneCategories(defaultCategories));
     }
 
     const parsed: unknown = JSON.parse(savedCategories);
@@ -174,12 +199,103 @@ export function getMockCategories(): Category[] {
         throw new Error("Saved mock categories are invalid.");
     }
 
-    return parsed;
+    return addCategoryImages(parsed);
 }
 
 export function addMockCategory(category: Category): void {
+    saveCategories(insertCategory(getMockCategories(), category));
+}
+
+export function updateMockCategory(
+    id: string,
+    updates: {
+        name: string;
+        slug: string;
+        image: string;
+        parentId: string | null;
+    },
+): void {
     const categories = getMockCategories();
-    let parentFound = category.parentId === null;
+    const existing = findCategory(categories, id);
+
+    if (!existing) {
+        throw new Error("The category could not be found.");
+    }
+
+    if (
+        updates.parentId === id ||
+        (updates.parentId && containsCategory(existing, updates.parentId))
+    ) {
+        throw new Error("A category cannot be nested under itself.");
+    }
+
+    const updatedCategory = { ...existing, ...updates };
+    const categoriesWithoutExisting = removeCategory(categories, id);
+    saveCategories(insertCategory(categoriesWithoutExisting, updatedCategory));
+}
+
+export function deleteMockCategory(id: string): void {
+    saveCategories(removeCategory(getMockCategories(), id));
+}
+
+function findCategory(categories: Category[], id: string): Category | undefined {
+    for (const category of categories) {
+        if (category.id === id) return category;
+        const childMatch = category.children
+            ? findCategory(category.children, id)
+            : undefined;
+        if (childMatch) return childMatch;
+    }
+
+    return undefined;
+}
+
+function containsCategory(category: Category, id: string): boolean {
+    return (
+        category.id === id ||
+        Boolean(
+            category.children?.some((child) => containsCategory(child, id)),
+        )
+    );
+}
+
+function removeCategory(categories: Category[], id: string): Category[] {
+    let removed = false;
+
+    function removeFrom(items: Category[]): Category[] {
+        return items.flatMap((category) => {
+            if (category.id === id) {
+                removed = true;
+                return [];
+            }
+
+            if (category.children?.length) {
+                return [
+                    { ...category, children: removeFrom(category.children) },
+                ];
+            }
+
+            return [category];
+        });
+    }
+
+    const result = removeFrom(categories);
+    if (!removed) {
+        throw new Error("The category could not be found.");
+    }
+
+    return result;
+}
+
+function insertCategory(
+    categories: Category[],
+    category: Category,
+): Category[] {
+    if (category.parentId === null) {
+        return [...categories, category];
+    }
+
+    let parentFound = false;
 
     function addToParent(items: Category[]): Category[] {
         return items.map((item) => {
@@ -199,17 +315,14 @@ export function addMockCategory(category: Category): void {
         });
     }
 
-    const updatedCategories =
-        category.parentId === null
-            ? [...categories, category]
-            : addToParent(categories);
-
+    const updatedCategories = addToParent(categories);
     if (!parentFound) {
         throw new Error("The selected parent category was not found.");
     }
 
-    window.localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(updatedCategories),
-    );
+    return updatedCategories;
+}
+
+function saveCategories(categories: Category[]): void {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
 }

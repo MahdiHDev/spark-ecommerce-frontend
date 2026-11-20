@@ -1,12 +1,6 @@
+import { Suspense } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { DashboardBreadcrumbs } from "@/components/dashboard/DashboardBreadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import {
     SidebarInset,
@@ -26,21 +20,16 @@ export default function Page({ children }: { children: React.ReactNode }) {
                             orientation="vertical"
                             className="mr-2 h-4"
                         />
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                <BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href="#">
-                                        Build Your Application
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator className="hidden md:block" />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>
-                                        Data Fetching
-                                    </BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
+                        <Suspense
+                            fallback={
+                                <div
+                                    aria-hidden="true"
+                                    className="h-5 w-28 animate-pulse rounded bg-muted"
+                                />
+                            }
+                        >
+                            <DashboardBreadcrumbs />
+                        </Suspense>
                     </div>
                 </header>
                 {children}
